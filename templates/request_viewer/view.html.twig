@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello RequestViewerController!{% endblock %}
+
+{% block body %}
+
+    <h1>Bin {{ bin.extId }}</h1>
+
+    <table class="table table-strigiped">
+        <thead>
+        <tr><th width="5%">Date</th><th width="5%">Method</th><th width="45%">Headers</th><th width="50%">Body</th></tr>
+        </thead>
+        <tbody>
+
+        {% for e in bin.binEntries %}
+            <tr>
+                <td valign="top">{{ e.createdAt|date }}</td>
+                <td valign="top">{{ e.entryMethod }}</td>
+                <td valign="top">
+                    {% for k,v in e.entryHeaders %}
+                        <dl>
+                            <dt><strong>{{ k }}</strong></dt>
+                            <dd>{% for vv in v %}{{ vv }}<br>{% endfor %}</dd>
+                        </dl>
+                    {% endfor %}
+                </td>
+                <td valign="top">{{ e.entryBody }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+{% endblock %}
