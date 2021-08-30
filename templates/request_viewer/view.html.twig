@@ -1,33 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RequestViewerController!{% endblock %}
+{% block title %}MRequest: Bin {{ bin.extId }}{% endblock %}
+
+{% block page_title %}Bin {{ bin.extId }}{% endblock %}
 
 {% block body %}
-
-    <h1>Bin {{ bin.extId }}</h1>
-
-    <table class="table table-strigiped">
-        <thead>
-        <tr><th width="5%">Date</th><th width="5%">Method</th><th width="45%">Headers</th><th width="50%">Body</th></tr>
-        </thead>
-        <tbody>
+    <h4><strong>URL:</strong> {{ viewUrl }}</h4>
 
         {% for e in bin.binEntries %}
-            <tr>
-                <td valign="top">{{ e.createdAt|date }}</td>
-                <td valign="top">{{ e.entryMethod }}</td>
-                <td valign="top">
-                    {% for k,v in e.entryHeaders %}
-                        <dl>
-                            <dt><strong>{{ k }}</strong></dt>
-                            <dd>{% for vv in v %}{{ vv }}<br>{% endfor %}</dd>
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark ">
+                <tr><th width="40%">{{ e.createdAt|date }}</th><th width="60%">{{ e.entryMethod }}</th></tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td valign="top">
+                        <dl class="row">
+                            {% for k,v in e.entryHeaders %}
+                                <dt class="col-sm-3"><strong>{{ k }}</strong></dt>
+                                <dd class="col-sm-9">{% for vv in v %}{{ vv }}<br>{% endfor %}</dd>
+                            {% endfor %}
                         </dl>
-                    {% endfor %}
-                </td>
-                <td valign="top">{{ e.entryBody }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
+                    </td>
+                    <td valign="top">{{ e.entryBody }}</td>
+                </tr>
+                </tbody>
 
-    </table>
+            </table>
+        {% endfor %}
 {% endblock %}

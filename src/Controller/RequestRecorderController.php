@@ -36,10 +36,7 @@ class RequestRecorderController extends AbstractController
         $entityManager->persist($newEntry);
         $entityManager->flush();
 
-        return $this->json([
-            'headers' => $headers,
-            'body' => $body
-        ]);
+        return $this->json([]);
     }
 
     #[Route('/c', name: 'request_bin_create')]
