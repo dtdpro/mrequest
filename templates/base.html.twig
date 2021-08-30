@@ -35,6 +35,9 @@
                         <ul class="nav flex-column">
                             <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ path('homepage') }}">Home</a></li>
                             <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ path('bin_create') }}">Create Bin</a></li>
+                            {% for sbin in bins %}
+                                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ path('bin_view',{id:sbin}) }}">{{ sbin }}</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </nav>
