@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Controller\ApiController;
 use App\Entity\Bin;
 use App\Entity\BinEntry;
 use Ramsey\Uuid\Uuid;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class RequestRecorderController extends AbstractController
+class RequestRecorderController extends ApiController
 {
     #[Route('/r/{id}', name: 'request_bin_record')]
     public function record($id, Request $request): Response
@@ -22,21 +23,25 @@ class RequestRecorderController extends AbstractController
         $binRepo = $this->getDoctrine()->getRepository(Bin::class);
         $bin = $binRepo->findOneBy(['ExtId'=>$id]);
 
-        $headers = $request->headers->all();
-        $body = $request->getContent();
-        $method = $request->getMethod();
+        if ($bin) {
+            $headers = $request->headers->all();
+            $body = $request->getContent();
+            $method = $request->getMethod();
 
-        $newEntry = new BinEntry();
+            $newEntry = new BinEntry();
 
-        $newEntry->setBin($bin);
-        $newEntry->setEntryHeaders($headers);
-        $newEntry->setEntryBody($body);
-        $newEntry->setEntryMethod($method);
+            $newEntry->setBin($bin);
+            $newEntry->setEntryHeaders($headers);
+            $newEntry->setEntryBody($body);
+            $newEntry->setEntryMethod($method);
 
-        $entityManager->persist($newEntry);
-        $entityManager->flush();
+            $entityManager->persist($newEntry);
+            $entityManager->flush();
+        } else {
+            return $this->respondNotFound();
+        }
 
-        return $this->json([]);
+        return $this->response([]);
     }
 
     #[Route('/c', name: 'request_bin_create')]
@@ -50,7 +55,7 @@ class RequestRecorderController extends AbstractController
         $entityManager->persist($bin);
         $entityManager->flush();
 
-        return $this->json([
+        return $this->respons([
             'id' => $bin->getId(),
             'extId' => $bin->getExtId(),
             'url' => $this->generateUrl('request_bin_record', ['id' => $bin->getExtId()], UrlGeneratorInterface::ABSOLUTE_URL)
@@ -65,11 +70,15 @@ class RequestRecorderController extends AbstractController
         $binRepo = $this->getDoctrine()->getRepository(Bin::class);
         $bin = $binRepo->findOneBy(['ExtId'=>$id]);
 
+        if (!$bin) {
+            return $this>$this->respondNotFound();
+        }
+
         $entries = [];
         foreach ($bin->getBinEntries() as $entry) {
             $entries[] = $entry;
         }
 
-        return $this->json($entries);
+        return $this->respons($entries);
     }
 }
