@@ -57,8 +57,19 @@ class RequestViewerController extends AbstractController
     #[Route('/view/{id}', name: 'bin_view')]
     public function view($id): Response
     {
+        $session = $this->requestStack->getSession();
+
         $binRepo = $this->getDoctrine()->getRepository(Bin::class);
         $bin = $binRepo->findOneBy(['ExtId'=>$id]);
+
+        if (!$bin) {
+            throw $this->createNotFoundException('The page does not exist');
+        }
+
+        if (!in_array($bin->getExtId(),$this->bins)) {
+            $this->bins[] = $bin->getExtId();
+            $session->set('bins',$this->bins);
+        }
 
         $viewUrl = $this->generateUrl('request_bin_record', ['id' => $bin->getExtId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
